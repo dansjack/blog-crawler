@@ -1,0 +1,6 @@
+credentials.py
+*.json
+*.csv
+xpaths_to_vals.txt
+.DS_Store
+.idea/
