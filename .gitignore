@@ -4,3 +4,5 @@ credentials.py
 xpaths_to_vals.txt
 .DS_Store
 .idea/
+gh_blog/gh_blog/settings.py
+*.pyc
