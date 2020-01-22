@@ -8,6 +8,7 @@ import scrapy
 """
 # TODO: Complete Item profile. See: https://stackoverflow.com/questions/43922562/scrapy-how-to-use-items-in-spider-and-how-to-send-items-to-pipelines
 
+
 class BlogSpiderAll(scrapy.Spider):
     """
     Crawls first 29 pages of Github.blog
@@ -31,13 +32,13 @@ class BlogSpiderAll(scrapy.Spider):
                     'div/a[contains(concat(" ",normalize-space(@class)," "),'
                     '" author-block ")]/@href').get()}
 
-        next_page = response.xpath('//*[contains(concat(" ",'
-                                   'normalize-space(@class)," "),'
-                                   '" next_page ")]/@href').get()
-
-        if next_page is not None:
-            next_page = response.urljoin(next_page)
-            yield scrapy.Request(next_page, callback=self.parse)
+        # next_page = response.xpath('//*[contains(concat(" ",'
+        #                            'normalize-space(@class)," "),'
+        #                            '" next_page ")]/@href').get()
+        #
+        # if next_page is not None:
+        #     next_page = response.urljoin(next_page)
+        #     yield scrapy.Request(next_page, callback=self.parse)
 
 
 class BlogSpiderFront(scrapy.Spider):

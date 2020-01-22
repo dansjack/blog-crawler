@@ -13,7 +13,7 @@ class GhBlogPipeline(object):
 
 
 class MongoPipeline(object):
-    collection_name = 'test-blog'
+    collection_name = 'blogs'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -34,8 +34,8 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         # if title doesn't exist in collection, add to collection
-        if self.db[self.collection_name].find_one({"title": item["title"]}) \
-                is None:
+        if self.db[self.collection_name].find_one({"link": item["link"]}) is \
+                None:
             self.db[self.collection_name].insert_one(dict(item))
             return item
         else:
