@@ -1,37 +1,35 @@
 # -*- coding: utf-8 -*-
 import scrapy
+
 """
     Spiders to crawl Github.blog
     NOTE: MAKE SURE A DOWNLOAD DELAY OF 10 IS ENABLED 
           AND ITEM PIPELINE IS SET APPROPRIATELY
 """
-
+# TODO: Complete Item profile. See: https://stackoverflow.com/questions/43922562/scrapy-how-to-use-items-in-spider-and-how-to-send-items-to-pipelines
 
 class BlogSpiderAll(scrapy.Spider):
     """
-    Crawls all pages of Github.blog
+    Crawls first 29 pages of Github.blog
     """
     name = "all-blogs"
-    start_urls = [
-        "https://github.blog/",
-        "https://github.blog/page/2/"
-    ]
+    start_urls = ["https://github.blog/page/{}/".format(i) for i in
+                  range(2, 30)]
+    start_urls.insert(0, "https://github.blog/")
 
     def parse(self, response):
-        articles = response.xpath('////main//section[contains(concat(" ",normalize-space(@class)," ")," all-posts ")]//article[contains(concat(" ",normalize-space(@class)," ")," post-item ")]')
+        articles = response.xpath(
+            '//main//section[contains(concat(" ",normalize-space(@class)," ")," all-posts ")]//article[contains(concat(" ",normalize-space(@class)," ")," post-item ")]')
         for blog in articles:
             yield {
-                'title': blog.xpath(
-                    'div/h4/a/text()').get().strip('\n').strip('\t').replace(
-                    "\u2019", "'"),
+                'title': blog.xpath('div/h4/a/text()').get().strip('\n').strip(
+                    '\t').replace("\u2019", "'"),
                 'link': blog.xpath('div/h4/a/@href').get(),
                 'date': blog.xpath('div/a/time/@datetime').get(),
-                'author': blog.xpath(
-                    'div/a/p/text()').get().strip('\n').strip('\t'),
-                'authorProfile': blog.xpath(
+                'author': blog.xpath('div/a/p/text()').get().strip('\n').strip(
+                    '\t'), 'authorProfile': blog.xpath(
                     'div/a[contains(concat(" ",normalize-space(@class)," "),'
-                    '" author-block ")]/@href').get()
-            }
+                    '" author-block ")]/@href').get()}
 
         next_page = response.xpath('//*[contains(concat(" ",'
                                    'normalize-space(@class)," "),'
@@ -47,25 +45,21 @@ class BlogSpiderFront(scrapy.Spider):
     Crawls only the front page of Github.blog
     """
     name = "blog-front"
-    start_urls = [
-        "https://github.blog/",
-    ]
+    start_urls = ["https://github.blog/", ]
 
     def parse(self, response):
-        articles = response.xpath('////main//section[contains(concat(" ",normalize-space(@class)," ")," all-posts ")]//article[contains(concat(" ",normalize-space(@class)," ")," post-item ")]')
+        articles = response.xpath(
+            '//main//section[contains(concat(" ",normalize-space(@class)," ")," all-posts ")]//article[contains(concat(" ",normalize-space(@class)," ")," post-item ")]')
         for blog in articles:
             yield {
-                'title': blog.xpath(
-                    'div/h4/a/text()').get().strip('\n').strip('\t').replace(
-                    "\u2019", "'"),
+                'title': blog.xpath('div/h4/a/text()').get().strip('\n').strip(
+                    '\t').replace("\u2019", "'"),
                 'link': blog.xpath('div/h4/a/@href').get(),
                 'date': blog.xpath('div/a/time/@datetime').get(),
-                'author': blog.xpath(
-                    'div/a/p/text()').get().strip('\n').strip('\t'),
-                'authorProfile': blog.xpath(
+                'author': blog.xpath('div/a/p/text()').get().strip('\n').strip(
+                    '\t'), 'authorProfile': blog.xpath(
                     'div/a[contains(concat(" ",normalize-space(@class)," "),'
-                    '" author-block ")]/@href').get()
-            }
+                    '" author-block ")]/@href').get()}
 
 
 class BlogSpiderFrontFive(scrapy.Spider):
@@ -73,26 +67,19 @@ class BlogSpiderFrontFive(scrapy.Spider):
     Crawls first five pages of Github.blog
     """
     name = "blog-front-five"
-    start_urls = [
-        "https://github.blog/",
-        "https://github.blog/page/2/",
-        "https://github.blog/page/3/",
-        "https://github.blog/page/4/",
-        "https://github.blog/page/5/"
-    ]
+    start_urls = ["https://github.blog/page/{}/".format(i) for i in range(2, 6)]
+    start_urls.insert(0, "https://github.blog/")
 
     def parse(self, response):
-        articles = response.xpath('////main//section[contains(concat(" ",normalize-space(@class)," ")," all-posts ")]//article[contains(concat(" ",normalize-space(@class)," ")," post-item ")]')
+        articles = response.xpath(
+            '//main//section[contains(concat(" ",normalize-space(@class)," ")," all-posts ")]//article[contains(concat(" ",normalize-space(@class)," ")," post-item ")]')
         for blog in articles:
             yield {
-                'title': blog.xpath(
-                    'div/h4/a/text()').get().strip('\n').strip('\t').replace(
-                    "\u2019", "'"),
+                'title': blog.xpath('div/h4/a/text()').get().strip('\n').strip(
+                    '\t').replace("\u2019", "'"),
                 'link': blog.xpath('div/h4/a/@href').get(),
                 'date': blog.xpath('div/a/time/@datetime').get(),
-                'author': blog.xpath(
-                    'div/a/p/text()').get().strip('\n').strip('\t'),
-                'authorProfile': blog.xpath(
+                'author': blog.xpath('div/a/p/text()').get().strip('\n').strip(
+                    '\t'), 'authorProfile': blog.xpath(
                     'div/a[contains(concat(" ",normalize-space(@class)," "),'
-                    '" author-block ")]/@href').get()
-            }
+                    '" author-block ")]/@href').get()}
