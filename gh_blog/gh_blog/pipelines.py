@@ -13,7 +13,7 @@ class GhBlogPipeline(object):
 
 
 class MongoPipeline(object):
-    collection_name = 'blogs'
+    collection_name = 'test-blog'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -33,5 +33,10 @@ class MongoPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        self.db[self.collection_name].insert_one(dict(item))
-        return item
+        # if title doesn't exist in collection, add to collection
+        if self.db[self.collection_name].find_one({"title": item["title"]}) \
+                is None:
+            self.db[self.collection_name].insert_one(dict(item))
+            return item
+        else:
+            print('Duplicate title found: "{}"'.format(item["title"]))
