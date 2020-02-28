@@ -9,7 +9,7 @@ from scrapy.exceptions import DropItem
 
 
 class MongoPipeline(object):
-    collection_name = 'blogs'
+    coll_name = 'blogs'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -30,9 +30,8 @@ class MongoPipeline(object):
 
     def process_item(self, item, spider):
         # if title doesn't exist in collection, add to collection
-        if self.db[self.collection_name].find_one({"link": item["link"]}) is \
-                None:
-            self.db[self.collection_name].insert_one(dict(item))
+        if self.db[self.coll_name].find_one({"link": item["link"]}) is None:
+            self.db[self.coll_name].insert_one(dict(item))
             return item
         else:
             print('Duplicate title found: "{}"'.format(item["title"]))

@@ -32,13 +32,13 @@ class BlogSpiderAll(scrapy.Spider):
                     'div/a[contains(concat(" ",normalize-space(@class)," "),'
                     '" author-block ")]/@href').get()}
 
-        # next_page = response.xpath('//*[contains(concat(" ",'
-        #                            'normalize-space(@class)," "),'
-        #                            '" next_page ")]/@href').get()
-        #
-        # if next_page is not None:
-        #     next_page = response.urljoin(next_page)
-        #     yield scrapy.Request(next_page, callback=self.parse)
+        next_page = response.xpath('//*[contains(concat(" ",'
+                                   'normalize-space(@class)," "),'
+                                   '" next_page ")]/@href').get()
+
+        if next_page is not None:
+            next_page = response.urljoin(next_page)
+            yield scrapy.Request(next_page, callback=self.parse)
 
 
 class BlogSpiderFront(scrapy.Spider):
