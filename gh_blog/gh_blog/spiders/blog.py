@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from ..items import BlogItem
 
 """
     Spiders to crawl Github.blog
@@ -23,8 +24,6 @@ class BlogSpiderAll(scrapy.Spider):
             '//main//section[contains(concat(" ",normalize-space(@class)," ")," all-posts ")]//article[contains(concat(" ",normalize-space(@class)," ")," post-item ")]')
         for blog in articles:
             yield {
-                'title': blog.xpath('div/h4/a/text()').get().strip('\n').strip(
-                    '\t').replace("\u2019", "'"),
                 'link': blog.xpath('div/h4/a/@href').get(),
                 'date': blog.xpath('div/a/time/@datetime').get(),
                 'author': blog.xpath('div/a/p/text()').get().strip('\n').strip(
@@ -84,3 +83,5 @@ class BlogSpiderFrontFive(scrapy.Spider):
                     '\t'), 'authorProfile': blog.xpath(
                     'div/a[contains(concat(" ",normalize-space(@class)," "),'
                     '" author-block ")]/@href').get()}
+
+
