@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from ..items import BlogItem
+
 
 """
-    Spiders to crawl Github.blog
-    NOTE: MAKE SURE A DOWNLOAD DELAY OF 10 IS ENABLED 
-          AND ITEM PIPELINE IS SET APPROPRIATELY
+    Spiders to crawl Github.blog -- DEPRECATED -- SEE blog_crawler.py
 """
-# TODO: Complete Item profile. See: https://stackoverflow.com/questions/43922562/scrapy-how-to-use-items-in-spider-and-how-to-send-items-to-pipelines
 
 
 class BlogSpiderAll(scrapy.Spider):
