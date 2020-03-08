@@ -9,11 +9,12 @@ from scrapy.exceptions import DropItem
 
 
 class MongoPipeline(object):
-    coll_name = 'changelogs'
+    coll_name = 'blogs'
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
+        self.count = 0
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -26,11 +27,13 @@ class MongoPipeline(object):
         self.db = self.client[self.mongo_db]
 
     def close_spider(self, spider):
+        print('Added {} posts to collection'.format(self.count))
         self.client.close()
 
     def process_item(self, item, spider):
         # if title doesn't exist in collection, add to collection
         if self.db[self.coll_name].find_one({"url": item["url"]}) is None:
+            self.count += 1
             self.db[self.coll_name].insert_one(dict(item))
             return item
         else:

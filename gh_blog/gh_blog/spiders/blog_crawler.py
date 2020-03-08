@@ -14,10 +14,14 @@ from scrapy.spiders import CrawlSpider, Rule
 class BlogCrawlerSpider(CrawlSpider):
     name = 'blog_crawler'
     allowed_domains = ['github.blog']
-    start_urls = ["https://github.blog/page/{}/".format(i) for i in range(5)]
+    start_urls = ["https://github.blog/page/{}/".format(i) for i in range(63)]
 
     rules = (Rule(
-        LinkExtractor(allow=r'github.blog\/20(18|19|20)-((0[1-9])|(1[0-2]))-([0-3][0-9])'),
+        LinkExtractor(allow=r'github.blog\/20(17|18|19|20)-((0[1-9])|(1['
+                            r'0-2]))-([0-3][0-9])',
+                      restrict_xpaths='//section[contains(concat(" ",'
+                                      'normalize-space(@class)," "),'
+                                      '" all-posts ")]'),
         callback='parse_blog',  follow=True),)
 
     def parse_blog(self, response):  # parse individual blogs
@@ -56,11 +60,11 @@ class BlogChangelogCrawlerSpider(CrawlSpider):
     name = 'changelog_crawler'
     allowed_domains = ['github.blog']
     start_urls = ["https://github.blog/changelog/page/{}/".format(i) for i in
-                  range(5)]
+                  range(2)]
     start_urls.insert(0, "https://github.blog/changelog")
 
     rules = (Rule(
-        LinkExtractor(allow=r'github.blog\/changelog\/20(18|19|20)-((0['
+        LinkExtractor(allow=r'github.blog\/changelog\/20(17|18|19|20)-((0['
                             r'1-9])|(1['
                             r'0-2]))-([0-3][0-9])'),
         callback='parse_blog',  follow=True),)
