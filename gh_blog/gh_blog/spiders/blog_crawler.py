@@ -14,7 +14,7 @@ from scrapy.spiders import CrawlSpider, Rule
 class BlogCrawlerSpider(CrawlSpider):
     name = 'blog_crawler'
     allowed_domains = ['github.blog']
-    start_urls = ["https://github.blog/page/{}/".format(i) for i in range(63)]
+    start_urls = ["https://github.blog/page/{}/".format(i) for i in range(10)]
 
     rules = (Rule(
         LinkExtractor(allow=r'github.blog\/20(17|18|19|20)-((0[1-9])|(1['
@@ -60,8 +60,7 @@ class BlogChangelogCrawlerSpider(CrawlSpider):
     name = 'changelog_crawler'
     allowed_domains = ['github.blog']
     start_urls = ["https://github.blog/changelog/page/{}/".format(i) for i in
-                  range(2)]
-    start_urls.insert(0, "https://github.blog/changelog")
+                  range(4)]
 
     rules = (Rule(
         LinkExtractor(allow=r'github.blog\/changelog\/20(17|18|19|20)-((0['

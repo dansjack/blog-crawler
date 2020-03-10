@@ -15,6 +15,7 @@ class MongoPipeline(object):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
         self.count = 0
+        self.up_count = 0
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -28,16 +29,25 @@ class MongoPipeline(object):
 
     def close_spider(self, spider):
         print('Added {} posts to collection'.format(self.count))
+        print('Updated {} posts in collection'.format(self.up_count))
         self.client.close()
 
     def process_item(self, item, spider):
         # if title doesn't exist in collection, add to collection
-        if self.db[self.coll_name].find_one({"url": item["url"]}) is None:
+        # add check for changes to wordCount
+        match = self.db[self.coll_name].find_one({"url": item["url"]})
+        if match is None:
             self.count += 1
             self.db[self.coll_name].insert_one(dict(item))
             return item
         else:
-            print('Duplicate title found: "{}"'.format(item["title"]))
+            if match['wordCount'] != item['wordCount']:
+                print('Title "{}" wordCount updated'.format(match['title']))
+                self.up_count += 1
+                self.db[self.coll_name].find_one_and_update({"url": item[
+                    "url"]}, {"$set": {"wordCount": item["wordCount"]}})
+            else:
+                print('Duplicate title found: "{}"'.format(item["title"]))
 
 
 class DuplicatePipeExample(object):
