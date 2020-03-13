@@ -7,14 +7,14 @@ from scrapy.spiders import CrawlSpider, Rule
 
 
 """
-    Spiders to crawl Github.blog -- DEPRECATED -- SEE blog_crawler.py
+    Spiders to crawl Github.blog
 """
 
 
 class BlogCrawlerSpider(CrawlSpider):
     name = 'blog_crawler'
     allowed_domains = ['github.blog']
-    start_urls = ["https://github.blog/page/{}/".format(i) for i in range(10)]
+    start_urls = ["https://github.blog/page/{}/".format(i) for i in range(2)]
 
     rules = (Rule(
         LinkExtractor(allow=r'github.blog\/20(17|18|19|20)-((0[1-9])|(1['
@@ -38,7 +38,6 @@ class BlogCrawlerSpider(CrawlSpider):
                     'Twitter\t', '\tTwitter\t', '\tFacebook\t',
                     '\tShare on Facebook\t', '\tShare']:
             blog_text = blog_text.replace(i, '')
-        # item['text'] = blog_text
         word_count = re.split(r'\s+', blog_text)
         item['url'] = response.url
         item['date'] = response.xpath('//time/@datetime').get()
@@ -61,7 +60,6 @@ class BlogChangelogCrawlerSpider(CrawlSpider):
     allowed_domains = ['github.blog']
     start_urls = ["https://github.blog/changelog/page/{}/".format(i) for i in
                   range(4)]
-
     rules = (Rule(
         LinkExtractor(allow=r'github.blog\/changelog\/20(17|18|19|20)-((0['
                             r'1-9])|(1['
@@ -80,11 +78,10 @@ class BlogChangelogCrawlerSpider(CrawlSpider):
                     'Twitter\t', '\tTwitter\t', '\tFacebook\t',
                     '\tShare on Facebook\t', '\tShare']:
             blog_text = blog_text.replace(i, '')
-        # item['text'] = blog_text
         word_count = re.split(r'\s+', blog_text)
         item['url'] = response.url
         item['date'] = response.xpath('//time/@datetime').get()
-        item['word_count'] = len(list(filter(None, word_count)))
+        item['wordCount'] = len(list(filter(None, word_count)))
         item['imgCount'] = len(response.xpath('//div[contains(concat(" ",'
                                               'normalize-space(@class)," "),'
                                               '" post__content ")]//img').extract())
