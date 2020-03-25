@@ -6,3 +6,4 @@ xpaths_to_vals.txt
 .idea/
 gh_blog/gh_blog/settings.py
 *.pyc
+*.icloud
