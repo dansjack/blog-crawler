@@ -9,8 +9,6 @@ from scrapy.exceptions import DropItem
 
 
 class MongoPipeline(object):
-    coll_name = 'blogs'
-
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
@@ -20,8 +18,7 @@ class MongoPipeline(object):
     @classmethod
     def from_crawler(cls, crawler):
         return cls(mongo_uri=crawler.settings.get('MONGO_URI'),
-                   mongo_db=crawler.settings.get('MONGO_DATABASE',
-                                                 'gh_blog'))
+                   mongo_db=crawler.settings.get('MONGO_DATABASE', 'gh_blog'))
 
     def open_spider(self, spider):
         self.client = pymongo.MongoClient(self.mongo_uri)
@@ -35,17 +32,22 @@ class MongoPipeline(object):
     def process_item(self, item, spider):
         # if title doesn't exist in collection, add to collection
         # add check for changes to wordCount
-        match = self.db[self.coll_name].find_one({"url": item["url"]})
+        coll_name = 'blogs'
+        if spider.name == 'changelog_crawler':
+            print('SPIDER IS CHANGELOGS')
+            coll_name = 'changelogs'
+        match = self.db[coll_name].find_one({"url": item["url"]})
         if match is None:
             self.count += 1
-            self.db[self.coll_name].insert_one(dict(item))
+            self.db[coll_name].insert_one(dict(item))
             return item
         else:
             if match['wordCount'] != item['wordCount']:
                 print('Title "{}" wordCount updated'.format(match['title']))
                 self.up_count += 1
-                self.db[self.coll_name].find_one_and_update({"url": item[
-                    "url"]}, {"$set": {"wordCount": item["wordCount"]}})
+                self.db[coll_name].find_one_and_update(
+                    {"url": item["url"]},
+                    {"$set": {"wordCount": item["wordCount"]}})
             else:
                 print('Duplicate title found: "{}"'.format(item["title"]))
 
@@ -82,4 +84,3 @@ class DuplicatesPipeline(object):
         else:
             with open('b.json') as f:
                 return {item['url'] for item in json.load(f)}
-
